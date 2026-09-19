@@ -47,6 +47,10 @@ Jev 会先从 0–4 分评价三个维度，再按权重换算成 0–100 分：
 
 ## 安装
 
+### 下载正式版本
+
+打开[最新的 JevFilterForX Release](https://github.com/grayrepo-byte/jev_filter_for_x/releases/latest)，在 **Assets** 中下载 Chrome ZIP。解压后打开 `chrome://extensions`，启用“开发者模式”，点击“加载已解压的扩展程序”，选择包含 `manifest.json` 的目录。
+
 ### 直接下载构建产物
 
 GitHub Actions 会在每次推送到 `main` 以及每个 Pull Request 时自动生成 Chrome 扩展 ZIP。下载最新构建产物：
@@ -55,6 +59,13 @@ GitHub Actions 会在每次推送到 `main` 以及每个 Pull Request 时自动�
 2. 进入对应的运行记录，下载 `jevfilterforx-chrome-<commit>` 产物。
 3. 解压产物，然后打开 `chrome://extensions`，启用“开发者模式”，点击“加载已解压的扩展程序”。
 4. 选择包含 `manifest.json` 的解压目录。
+
+CI 会在推送 `v*` 标签时自动创建 Release。例如：
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
 
 ### 本地构建
 

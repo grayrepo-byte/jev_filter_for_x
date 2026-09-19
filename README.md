@@ -47,6 +47,10 @@ Topic, value, and noise categories are evaluated separately, so category filters
 
 ## Install
 
+### Download a release
+
+[Open the latest JevFilterForX release](https://github.com/grayrepo-byte/jev_filter_for_x/releases/latest) and download the Chrome ZIP under **Assets**. Unzip it, then open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**. Select the unzipped folder that contains `manifest.json`.
+
 ### Download a packaged build
 
 The GitHub Actions workflow builds a Chrome extension ZIP for every push to `main` and every pull request. To download the latest packaged build:
@@ -55,6 +59,13 @@ The GitHub Actions workflow builds a Chrome extension ZIP for every push to `mai
 2. Open the run and download the `jevfilterforx-chrome-<commit>` artifact.
 3. Unzip the artifact, then open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 4. Select the unzipped folder that contains `manifest.json`.
+
+Releases are created automatically by CI when a `v*` tag is pushed. For example:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
 
 ### Build locally
 
