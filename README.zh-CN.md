@@ -58,6 +58,8 @@ GitHub Actions 会在每次推送到 `main` 以及每个 Pull Request 时自动�
 
 ### 本地构建
 
+请使用 Node.js 22 或更高版本。
+
 1. 安装依赖：
 
    ```bash

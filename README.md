@@ -58,6 +58,8 @@ The GitHub Actions workflow builds a Chrome extension ZIP for every push to `mai
 
 ### Build locally
 
+Use Node.js 22 or newer.
+
 1. Install dependencies:
 
    ```bash
