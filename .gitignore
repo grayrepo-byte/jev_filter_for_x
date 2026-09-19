@@ -1,0 +1,17 @@
+node_modules/
+.superpowers/
+.output/
+dist/
+.wxt/
+stats.html
+.dev.vars
+
+# 本地调试脚手架，不入库
+vt-*.config.ts
+src/__*.test.ts
+docs/superpowers
+promo-video
+.idea
+video-assets
+.claude/settings.local.json
+.DS_Store
