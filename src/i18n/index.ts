@@ -37,7 +37,7 @@ const EN = {
   language: 'Language',
   languageDescription: 'Choose the language used by JevFilterForX.',
   browserLanguage: 'Browser default',
-  apiKeyTitle: 'TypeSafe API key',
+  apiSectionTitle: 'TypeSafe API',
   mockModeOptions:
     'Mock mode — no API key stored, so posts are scored locally with fake numbers. Add a key to use Jev.',
   apiKeyLabel: 'TypeSafe API key',
@@ -45,6 +45,14 @@ const EN = {
   saved: 'Saved',
   apiKeyStorage:
     'Stored on this device only — never synced to your Google account.',
+  endpointLabel: 'Jev API endpoint',
+  saveEndpoint: 'Save endpoint',
+  endpointHelp:
+    'Where Jev requests are sent. Keep the default, or clear the field to restore it. A different address asks your browser for access to that host.',
+  endpointInvalid:
+    'Enter a complete http or https address, such as https://api.example.com/v1/systemone.',
+  endpointPermissionDenied:
+    'JevFilterForX needs access to that host, so the address was not saved.',
   wantsHeading: 'What do you want from X?',
   interests: 'Interests',
   scoringTitle: 'How scores are calculated',
@@ -94,13 +102,20 @@ const MESSAGES: Record<SupportedLocale, Record<MessageKey, string>> = {
     language: '语言',
     languageDescription: '选择 JevFilterForX 使用的界面语言。',
     browserLanguage: '跟随浏览器',
-    apiKeyTitle: 'TypeSafe API Key',
+    apiSectionTitle: 'TypeSafe API',
     mockModeOptions:
       '模拟模式——尚未保存 API Key，帖子会在本地使用模拟分数。添加 Key 后即可使用 Jev。',
     apiKeyLabel: 'TypeSafe API Key',
     saveKey: '保存 Key',
     saved: '已保存',
     apiKeyStorage: '仅存储在当前设备，不会同步到你的 Google 账户。',
+    endpointLabel: 'Jev API 地址',
+    saveEndpoint: '保存地址',
+    endpointHelp:
+      '分类请求会发送到这个地址。保留默认值，或清空输入框以恢复默认；填写其他地址时，浏览器会请求访问该主机的权限。',
+    endpointInvalid:
+      '请输入完整的 http 或 https 地址，例如 https://api.example.com/v1/systemone。',
+    endpointPermissionDenied: 'JevFilterForX 需要访问该主机的权限，因此地址未保存。',
     wantsHeading: '你希望从 X 获得什么？',
     interests: '兴趣主题',
     scoringTitle: '分数如何计算',
@@ -146,13 +161,21 @@ const MESSAGES: Record<SupportedLocale, Record<MessageKey, string>> = {
     language: '言語',
     languageDescription: 'JevFilterForX の表示言語を選択します。',
     browserLanguage: 'ブラウザーの既定',
-    apiKeyTitle: 'TypeSafe API キー',
+    apiSectionTitle: 'TypeSafe API',
     mockModeOptions:
       'モックモード — API キーがないため、投稿はローカルの仮スコアで評価されます。Jev を使うにはキーを追加してください。',
     apiKeyLabel: 'TypeSafe API キー',
     saveKey: 'キーを保存',
     saved: '保存済み',
     apiKeyStorage: 'この端末にのみ保存され、Google アカウントには同期されません。',
+    endpointLabel: 'Jev API エンドポイント',
+    saveEndpoint: 'エンドポイントを保存',
+    endpointHelp:
+      '分類リクエストの送信先です。既定のままにするか、空欄にすると既定に戻ります。別のアドレスを指定すると、ブラウザーがそのホストへのアクセス許可を求めます。',
+    endpointInvalid:
+      'http または https の完全なアドレスを入力してください（例: https://api.example.com/v1/systemone）。',
+    endpointPermissionDenied:
+      'JevFilterForX にはそのホストへのアクセス権限が必要なため、アドレスは保存されませんでした。',
     wantsHeading: 'X から何を得たいですか？',
     interests: '興味',
     scoringTitle: 'スコアの計算方法',
@@ -198,7 +221,7 @@ const MESSAGES: Record<SupportedLocale, Record<MessageKey, string>> = {
     language: 'Idioma',
     languageDescription: 'Elige el idioma de JevFilterForX.',
     browserLanguage: 'Predeterminado del navegador',
-    apiKeyTitle: 'Clave API de TypeSafe',
+    apiSectionTitle: 'API de TypeSafe',
     mockModeOptions:
       'Modo de prueba: no hay una clave API guardada, por lo que las publicaciones reciben puntuaciones simuladas. Añade una clave para usar Jev.',
     apiKeyLabel: 'Clave API de TypeSafe',
@@ -206,6 +229,14 @@ const MESSAGES: Record<SupportedLocale, Record<MessageKey, string>> = {
     saved: 'Guardado',
     apiKeyStorage:
       'Solo se guarda en este dispositivo; nunca se sincroniza con tu cuenta de Google.',
+    endpointLabel: 'Dirección de la API de Jev',
+    saveEndpoint: 'Guardar dirección',
+    endpointHelp:
+      'Dirección a la que se envían las solicitudes de Jev. Déjala como está o vacía el campo para restaurar la predeterminada. Si eliges otra dirección, el navegador pedirá acceso a ese host.',
+    endpointInvalid:
+      'Introduce una dirección http o https completa, por ejemplo https://api.example.com/v1/systemone.',
+    endpointPermissionDenied:
+      'JevFilterForX necesita acceso a ese host, así que la dirección no se guardó.',
     wantsHeading: '¿Qué quieres obtener de X?',
     interests: 'Intereses',
     scoringTitle: 'Cómo se calcula la puntuación',
@@ -251,7 +282,7 @@ const MESSAGES: Record<SupportedLocale, Record<MessageKey, string>> = {
     language: 'Sprache',
     languageDescription: 'Wähle die Sprache von JevFilterForX.',
     browserLanguage: 'Browsersprache',
-    apiKeyTitle: 'TypeSafe-API-Schlüssel',
+    apiSectionTitle: 'TypeSafe-API',
     mockModeOptions:
       'Testmodus — ohne gespeicherten API-Schlüssel werden Beiträge lokal mit Testwerten bewertet. Füge einen Schlüssel hinzu, um Jev zu verwenden.',
     apiKeyLabel: 'TypeSafe-API-Schlüssel',
@@ -259,6 +290,14 @@ const MESSAGES: Record<SupportedLocale, Record<MessageKey, string>> = {
     saved: 'Gespeichert',
     apiKeyStorage:
       'Wird nur auf diesem Gerät gespeichert und nie mit deinem Google-Konto synchronisiert.',
+    endpointLabel: 'Jev-API-Adresse',
+    saveEndpoint: 'Adresse speichern',
+    endpointHelp:
+      'Adresse, an die Jev-Anfragen gesendet werden. Lass sie auf dem Standardwert oder leere das Feld, um ihn wiederherzustellen. Bei einer anderen Adresse fragt der Browser nach Zugriff auf diesen Host.',
+    endpointInvalid:
+      'Gib eine vollständige http- oder https-Adresse ein, zum Beispiel https://api.example.com/v1/systemone.',
+    endpointPermissionDenied:
+      'JevFilterForX benötigt Zugriff auf diesen Host, daher wurde die Adresse nicht gespeichert.',
     wantsHeading: 'Was möchtest du von X bekommen?',
     interests: 'Interessen',
     scoringTitle: 'So wird die Punktzahl berechnet',

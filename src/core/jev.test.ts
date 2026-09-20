@@ -120,6 +120,17 @@ describe('JevClassifier', () => {
     expect(body.state).not.toHaveProperty('settings')
   })
 
+  it('posts to a configured endpoint instead of the default', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(response(200, { answers: {} }))
+    await new JevClassifier('sk-x', {
+      fetchImpl,
+      endpoint: 'https://jev.example.com/custom/systemone',
+    }).classify([posts[0]])
+    expect(fetchImpl.mock.calls[0][0]).toBe(
+      'https://jev.example.com/custom/systemone',
+    )
+  })
+
   it('retries 429/529 with exponential backoff', async () => {
     const fetchImpl = vi
       .fn()

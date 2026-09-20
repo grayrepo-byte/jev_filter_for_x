@@ -1,7 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fakeBrowser } from '@webext-core/fake-browser'
+import { DEFAULT_ENDPOINT } from '../../core/endpoint'
 import SignalFeedOptions from './SignalFeedOptions'
 
 beforeEach(() => fakeBrowser.reset())
@@ -46,5 +47,78 @@ describe('SignalFeedOptions', () => {
       const stored = await browser.storage.sync.get('settings')
       expect(stored.settings).toMatchObject({ locale: 'zh-CN' })
     })
+  })
+})
+
+describe('Jev API endpoint', () => {
+  const saveEndpoint = () =>
+    screen.getByRole('button', { name: 'Save endpoint' })
+
+  it('starts on the default address and saves a custom one after access is granted', async () => {
+    const request = vi
+      .spyOn(browser.permissions, 'request')
+      .mockResolvedValue(true)
+    render(<SignalFeedOptions />)
+
+    const field = await screen.findByLabelText('Jev API endpoint')
+    expect(field).toHaveValue(DEFAULT_ENDPOINT)
+
+    await userEvent.clear(field)
+    await userEvent.type(field, 'https://jev.example.com/v1/systemone')
+    await userEvent.click(saveEndpoint())
+
+    await waitFor(async () => {
+      expect((await browser.storage.local.get('jevEndpoint')).jevEndpoint).toBe(
+        'https://jev.example.com/v1/systemone',
+      )
+    })
+    expect(request).toHaveBeenCalledWith({
+      origins: ['https://jev.example.com/*'],
+    })
+  })
+
+  it('saves the default address without asking for host access', async () => {
+    const request = vi
+      .spyOn(browser.permissions, 'request')
+      .mockResolvedValue(true)
+    render(<SignalFeedOptions />)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Save endpoint' }))
+
+    expect(request).not.toHaveBeenCalled()
+    await waitFor(async () => {
+      expect((await browser.storage.local.get('jevEndpoint')).jevEndpoint).toBe(
+        DEFAULT_ENDPOINT,
+      )
+    })
+  })
+
+  it('rejects an address that is not a URL', async () => {
+    render(<SignalFeedOptions />)
+
+    const field = await screen.findByLabelText('Jev API endpoint')
+    await userEvent.clear(field)
+    await userEvent.type(field, 'api.example.com')
+    await userEvent.click(saveEndpoint())
+
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(
+      (await browser.storage.local.get('jevEndpoint')).jevEndpoint,
+    ).toBeUndefined()
+  })
+
+  it('keeps the stored address when host access is denied', async () => {
+    vi.spyOn(browser.permissions, 'request').mockResolvedValue(false)
+    render(<SignalFeedOptions />)
+
+    const field = await screen.findByLabelText('Jev API endpoint')
+    await userEvent.clear(field)
+    await userEvent.type(field, 'https://jev.example.com/v1/systemone')
+    await userEvent.click(saveEndpoint())
+
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(
+      (await browser.storage.local.get('jevEndpoint')).jevEndpoint,
+    ).toBeUndefined()
   })
 })

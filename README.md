@@ -24,7 +24,7 @@ JevFilterForX is a browser extension for turning the X timeline into a higher-si
 - Folds low-value posts while keeping them available to expand.
 - Lets you hide the same post again after expanding it.
 - Hides attached images and videos together with a folded post.
-- Provides an options page in its own tab for API key, language, topics, value preferences, category filters, and score thresholds.
+- Provides an options page in its own tab for API key, Jev API address, language, topics, value preferences, category filters, and score thresholds.
 - Includes English, Simplified Chinese, Japanese, Spanish, and German UI translations.
 
 ## Why Jev for real-time filtering?
@@ -99,7 +99,7 @@ npm run build
 
 ## Privacy and permissions
 
-The API key is stored on the current device and is not synced to a Google account. Classification requests use the configured TypeSafe service. The extension only requests access to X/Twitter pages and the TypeSafe API endpoint needed for filtering.
+The API key is stored on the current device and is not synced to a Google account. Classification requests go to the Jev API address configured in settings, which defaults to `https://api.typesafe.ai/v1/systemone`; clearing the field restores that default. The extension asks for access to X/Twitter pages and the default TypeSafe host up front, and requests permission for any other host only when you save a custom address.
 
 ## Project status
 

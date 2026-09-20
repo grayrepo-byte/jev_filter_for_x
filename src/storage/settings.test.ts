@@ -3,13 +3,16 @@ import { fakeBrowser } from '@webext-core/fake-browser'
 import {
   DEFAULT_SETTINGS,
   getAuthError,
+  getJevEndpoint,
   getSettings,
   onSettingsChanged,
   saveSettings,
   getApiKey,
   setAuthError,
   setApiKey,
+  setJevEndpoint,
 } from './settings'
+import { DEFAULT_ENDPOINT } from '../core/endpoint'
 
 beforeEach(() => {
   fakeBrowser.reset()
@@ -40,6 +43,27 @@ describe('settings', () => {
 
   it('reads api key as empty string when unset', async () => {
     expect(await getApiKey()).toBe('')
+  })
+
+  it('returns the default jev endpoint when unset', async () => {
+    expect(await getJevEndpoint()).toBe(DEFAULT_ENDPOINT)
+  })
+
+  it('persists a custom jev endpoint in local storage, not sync', async () => {
+    await setJevEndpoint('https://jev.example.com/v1/systemone')
+
+    expect(await getJevEndpoint()).toBe('https://jev.example.com/v1/systemone')
+    expect((await browser.storage.local.get('jevEndpoint')).jevEndpoint).toBe(
+      'https://jev.example.com/v1/systemone',
+    )
+    expect(
+      (await browser.storage.sync.get('jevEndpoint')).jevEndpoint,
+    ).toBeUndefined()
+  })
+
+  it('returns the default jev endpoint when the stored value is blank', async () => {
+    await setJevEndpoint('')
+    expect(await getJevEndpoint()).toBe(DEFAULT_ENDPOINT)
   })
 
   it('keeps authentication errors in local storage', async () => {

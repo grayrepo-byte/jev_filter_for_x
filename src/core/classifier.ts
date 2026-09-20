@@ -9,6 +9,7 @@ import type {
 import { NOISE_TYPES, TOPICS, WANTS } from './types'
 import { MAX_LEVEL, composeScore } from './scoring'
 import { JevClassifier } from './jev'
+import { DEFAULT_ENDPOINT } from './endpoint'
 
 const MOCK_CLASSIFIED_AT = Date.now()
 
@@ -61,6 +62,11 @@ export class MockClassifier implements Classifier {
   }
 }
 
-export function createClassifier(apiKey: string): Classifier {
-  return apiKey ? new JevClassifier(apiKey) : new MockClassifier()
+export function createClassifier(
+  apiKey: string,
+  endpoint = DEFAULT_ENDPOINT,
+): Classifier {
+  return apiKey
+    ? new JevClassifier(apiKey, { endpoint })
+    : new MockClassifier()
 }

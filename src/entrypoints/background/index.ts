@@ -10,7 +10,7 @@ import {
 import { ClassificationQueue } from '../../core/queue'
 import type { Classification, Post } from '../../core/types'
 import { getCached, pruneExpired, putCached } from '../../storage/cache'
-import { getApiKey, setAuthError } from '../../storage/settings'
+import { getApiKey, getJevEndpoint, setAuthError } from '../../storage/settings'
 
 export async function openSettingsPage(
   open: () => Promise<void> = () => browser.runtime.openOptionsPage(),
@@ -25,7 +25,10 @@ export async function handlePosts(posts: Post[]): Promise<Classification[]> {
   const misses = posts.filter((post) => !cached.has(post.id))
 
   if (misses.length > 0) {
-    const classifier = createClassifier(await getApiKey())
+    const classifier = createClassifier(
+      await getApiKey(),
+      await getJevEndpoint(),
+    )
     try {
       const fresh = await classifier.classify(misses)
       await putCached(fresh)

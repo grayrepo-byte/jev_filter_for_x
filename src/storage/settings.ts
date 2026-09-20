@@ -1,5 +1,6 @@
 import type { Settings } from '../core/types'
 import { TOPICS, WANTS } from '../core/types'
+import { DEFAULT_ENDPOINT } from '../core/endpoint'
 
 export const DEFAULT_SETTINGS: Settings = {
   locale: 'auto',
@@ -15,6 +16,7 @@ export const DEFAULT_SETTINGS: Settings = {
 
 const SETTINGS_KEY = 'settings'
 const API_KEY = 'apiKey'
+const JEV_ENDPOINT = 'jevEndpoint'
 const AUTH_ERROR = 'authError'
 let saveChain: Promise<void> = Promise.resolve()
 
@@ -41,6 +43,15 @@ export async function getApiKey(): Promise<string> {
 
 export async function setApiKey(key: string): Promise<void> {
   await browser.storage.local.set({ [API_KEY]: key })
+}
+
+export async function getJevEndpoint(): Promise<string> {
+  const stored = await browser.storage.local.get(JEV_ENDPOINT)
+  return (stored[JEV_ENDPOINT] as string | undefined) || DEFAULT_ENDPOINT
+}
+
+export async function setJevEndpoint(endpoint: string): Promise<void> {
+  await browser.storage.local.set({ [JEV_ENDPOINT]: endpoint })
 }
 
 export async function setAuthError(flag: boolean): Promise<void> {

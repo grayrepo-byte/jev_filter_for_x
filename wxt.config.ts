@@ -31,5 +31,8 @@ export default defineConfig({
       'https://x.com/*',
       'https://twitter.com/*',
     ],
+    // A custom Jev endpoint is requested at runtime from the options page, so
+    // the manifest stays scoped to the default host.
+    optional_host_permissions: ['http://*/*', 'https://*/*'],
   },
 })

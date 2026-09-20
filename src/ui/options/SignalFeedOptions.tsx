@@ -7,6 +7,11 @@ import {
 } from '../../core/types'
 import { MAX_LEVEL, SCORE_WEIGHTS } from '../../core/scoring'
 import {
+  DEFAULT_ENDPOINT,
+  normalizeEndpoint,
+  originPattern,
+} from '../../core/endpoint'
+import {
   LOCALE_NAMES,
   SUPPORTED_LOCALES,
   resolveLocale,
@@ -15,9 +20,11 @@ import {
 } from '../../i18n'
 import {
   getApiKey,
+  getJevEndpoint,
   getSettings,
   saveSettings,
   setApiKey,
+  setJevEndpoint,
 } from '../../storage/settings'
 import { label } from '../styles'
 
@@ -30,11 +37,15 @@ function toggleIn<T>(list: T[], value: T): T[] {
 export default function SignalFeedOptions() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [apiKey, setApiKeyInput] = useState('')
+  const [endpoint, setEndpointInput] = useState(DEFAULT_ENDPOINT)
+  const [endpointError, setEndpointError] = useState<MessageKey | null>(null)
   const [saved, setSaved] = useState(false)
+  const [endpointSaved, setEndpointSaved] = useState(false)
 
   useEffect(() => {
     void getSettings().then(setSettings)
     void getApiKey().then(setApiKeyInput)
+    void getJevEndpoint().then(setEndpointInput)
   }, [])
 
   const locale = settings?.locale ?? 'auto'
@@ -52,6 +63,33 @@ export default function SignalFeedOptions() {
   const update = (patch: Partial<Settings>) => {
     setSettings((current) => (current ? { ...current, ...patch } : current))
     void saveSettings(patch)
+  }
+
+  const saveEndpoint = async () => {
+    const normalized = normalizeEndpoint(endpoint)
+    if (!normalized) {
+      setEndpointError('endpointInvalid')
+      setEndpointSaved(false)
+      return
+    }
+
+    if (normalized !== DEFAULT_ENDPOINT) {
+      // Only the default host is granted in the manifest, so the background
+      // worker cannot reach any other address until the user allows it.
+      const granted = await browser.permissions.request({
+        origins: [originPattern(normalized)],
+      })
+      if (!granted) {
+        setEndpointError('endpointPermissionDenied')
+        setEndpointSaved(false)
+        return
+      }
+    }
+
+    await setJevEndpoint(normalized)
+    setEndpointInput(normalized)
+    setEndpointError(null)
+    setEndpointSaved(true)
   }
 
   return (
@@ -91,7 +129,7 @@ export default function SignalFeedOptions() {
       </section>
 
       <section className="space-y-4 rounded-xl border border-slate-200 p-5">
-        <h2 className="font-semibold">{translate('apiKeyTitle')}</h2>
+        <h2 className="font-semibold">{translate('apiSectionTitle')}</h2>
         {!apiKey && (
           <p className="rounded-lg bg-amber-50 p-3 text-amber-800">
             {translate('mockModeOptions')}
@@ -127,6 +165,39 @@ export default function SignalFeedOptions() {
           )}
         </div>
         <p className="text-slate-500">{translate('apiKeyStorage')}</p>
+
+        <label className="block space-y-1.5">
+          <span>{translate('endpointLabel')}</span>
+          <input
+            aria-label={translate('endpointLabel')}
+            type="text"
+            value={endpoint}
+            onChange={(event) => {
+              setEndpointInput(event.target.value)
+              setEndpointError(null)
+              setEndpointSaved(false)
+            }}
+            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+          />
+        </label>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="rounded-lg border border-slate-300 px-4 py-2 font-medium"
+            onClick={saveEndpoint}
+          >
+            {translate('saveEndpoint')}
+          </button>
+          {endpointSaved && (
+            <span className="text-emerald-700">{translate('saved')}</span>
+          )}
+        </div>
+        {endpointError && (
+          <p role="alert" className="rounded-lg bg-amber-50 p-3 text-amber-800">
+            {translate(endpointError)}
+          </p>
+        )}
+        <p className="text-slate-500">{translate('endpointHelp')}</p>
       </section>
 
       <section className="space-y-3 rounded-xl border border-slate-200 p-5">

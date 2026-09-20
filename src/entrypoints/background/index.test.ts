@@ -7,6 +7,7 @@ import {
   getAuthError,
   setApiKey,
   setAuthError,
+  setJevEndpoint,
 } from '../../storage/settings'
 import {
   createBackgroundPipeline,
@@ -43,6 +44,23 @@ describe('handlePosts', () => {
     const output = await handlePosts([post(first), post(second)])
     expect(output[0]).toEqual(cached)
     expect(output.map((item) => item.tweetId)).toEqual([first, second])
+  })
+
+  it('classifies against the configured endpoint', async () => {
+    await setApiKey('sk-good')
+    await setJevEndpoint('https://jev.example.com/v1/systemone')
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ answers: {} }),
+    })
+    vi.stubGlobal('fetch', fetchImpl)
+
+    await handlePosts([post(key('endpoint'))])
+
+    expect(fetchImpl.mock.calls[0][0]).toBe(
+      'https://jev.example.com/v1/systemone',
+    )
   })
 
   it('handles empty input', async () => {

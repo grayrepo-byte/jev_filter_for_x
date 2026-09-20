@@ -9,6 +9,7 @@ import type {
 import { NOISE_TYPES, TOPICS, WANTS } from './types'
 import { SCORE_LEVELS, composeScore } from './scoring'
 import type { Classifier } from './classifier'
+import { DEFAULT_ENDPOINT } from './endpoint'
 
 export const NOUL_HIT_THRESHOLD = 0.5
 
@@ -32,7 +33,6 @@ export class JevRequestError extends Error {
 const MAX_RETRIES = 2
 const RETRY_BASE_MS = 500
 const RETRYABLE = new Set([429, 529])
-const ENDPOINT = 'https://api.typesafe.ai/v1/systemone'
 const MODEL = 'jev-latest'
 export const REQUEST_TIMEOUT_MS = 15_000
 
@@ -179,6 +179,7 @@ type JevOptions = {
   fetchImpl?: typeof fetch
   sleep?: (milliseconds: number) => Promise<void>
   timeoutMs?: number
+  endpoint?: string
 }
 
 const defaultSleep = (milliseconds: number) =>
@@ -188,6 +189,7 @@ export class JevClassifier implements Classifier {
   private readonly fetchImpl: typeof fetch
   private readonly sleep: (milliseconds: number) => Promise<void>
   private readonly timeoutMs: number
+  private readonly endpoint: string
 
   constructor(
     private readonly apiKey: string,
@@ -199,6 +201,7 @@ export class JevClassifier implements Classifier {
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch.bind(globalThis)
     this.sleep = options.sleep ?? defaultSleep
     this.timeoutMs = options.timeoutMs ?? REQUEST_TIMEOUT_MS
+    this.endpoint = options.endpoint ?? DEFAULT_ENDPOINT
   }
 
   private async send(posts: Post[]): Promise<Response> {
@@ -215,7 +218,7 @@ export class JevClassifier implements Classifier {
       const controller = new AbortController()
       const timeout = setTimeout(() => controller.abort(), this.timeoutMs)
       try {
-        response = await this.fetchImpl(ENDPOINT, {
+        response = await this.fetchImpl(this.endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

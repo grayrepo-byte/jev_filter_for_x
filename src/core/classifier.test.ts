@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { MockClassifier, createClassifier } from './classifier'
 
 const post = (id: string, text = 'hello world') => ({
@@ -38,5 +38,24 @@ describe('createClassifier', () => {
   it('selects mock without a key and Jev with a key', () => {
     expect(createClassifier('')).toBeInstanceOf(MockClassifier)
     expect(createClassifier('sk-x').constructor.name).toBe('JevClassifier')
+  })
+
+  it('classifies against the configured endpoint', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ answers: {} }),
+    })
+    vi.stubGlobal('fetch', fetchImpl)
+
+    await createClassifier(
+      'sk-x',
+      'https://jev.example.com/v1/systemone',
+    ).classify([post('1')])
+
+    expect(fetchImpl.mock.calls[0][0]).toBe(
+      'https://jev.example.com/v1/systemone',
+    )
+    vi.unstubAllGlobals()
   })
 })
